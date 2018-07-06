@@ -1,11 +1,21 @@
 ---
+- job:
+    name: repoxplorer-config-check
+    parent: base
+    description: Verification of the repoxplorer config syntax
+    run: playbooks/syntax-check.yaml
+    nodeset:
+      nodes:
+        - name: test-node
+          label: runc-centos
+
 - project:
     check:
       jobs:
-        - noop
+        - repoxplorer-config-check
     gate:
       jobs:
-        - noop
+        - repoxplorer-config-check
     post:
       jobs:
         - noop

@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Fetch repoXplorer from github
+      git:
+        repo: 'https://www.github.com/morucci/repoxplorer/'
+        dest: "{{ project.src_dir }}/repoxplorer-src"
+
+    - name: Create the repoxplorer-venv
+      command: "virtualenv {{ project.src_dir }}/repoxplorer-venv"
+
+    - name: Install repoXplorer in the venv
+      shell: "source {{ project.src_dir }}/repoxplorer-venv/bin/activate; cd {{ project.src_dir }}/repoxplorer-src; pip install .;pip install -r requirements.txt"
+
+    - name: Copy all config yaml files to the virtualenv
+      command: "cp {{ project.src_dir }}/*.yaml {{ project.src_dir }}/repoxplorer-venv/local/share/repoxplorer/"
+
+    - name: Run the syntax checker
+      shell: "source {{ project.src_dir }}/repoxplorer-venv/bin/activate; repoxplorer-config-validate"
